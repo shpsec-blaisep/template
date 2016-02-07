@@ -1,150 +1,375 @@
-:pdf: doctutorial
+*Have something you'd like to contribute to the framework? We welcome
+pull requests but ask that you carefully read this document first to
+understand how best to submit them; what kind of changes are likely to
+be accepted; and what to expect from the Spring team when evaluating
+your submission.*
 
-Add to the Internal Docs
-========================
+*Please refer back to this document as a checklist before issuing any
+pull request; this will save time for everyone!*
 
-This tutorial will show you how to add to the Internal Doc Portal and and also create a PDF of your document.
-
-**Bottom line:**
-*The build scripts require a collection of settings which we associate with a ``doc_code`` defined in ``techdocs/source/internal_library.json``. This doc code is the argument for pdf builds.*
-
-Add to the HTML Doc Portal
---------------------------
-
-	1.	Clone the Stash Repo (Click **View Source in Stash** on the left-hand sidebar, to find the Stash Repo)
-
-	2.	Create and checkout a new branch named after the associated Jira ticket (if you don't have one, make one in the DOCS project)
-
-	3.	Add a new ReStructuredText (.rst) file in ``techdocs/source/``.
-
-		Example::
-
-			techdocs/source/my_supercool_doc.rst
-
-	4.	Add the content into your file using ReStructuredText markup. You can use  our example doc as a template to start from: :download:`/common/text/my_supercool_doc.rst`. (copy and paste the contents into your RST file and use them as a starting point.)
-
-		For a quick intro to writing ReStructuredText, check out the Sphinx documentation's `reStructured Text Primer <http://sphinx-doc.org/rest.html>`__, or the official rST documentation's `A ReStructuredText Primer <http://docutils.sourceforge.net/docs/user/rst/quickstart.html>`__.
-
-	5.	Add your file to the Internal docs toctree. To do so, open ``source/internal/internal.rst`` in a text editor, and add the filename (without the extension) of your RST file to the ``.. toctree::`` directive.
-
-		Example::
-
-			.. toctree::
-
-				my_supercool_doc
-				Encyclopædia Shapetanica (High-Side) <https://docs.google.com/a/intrafile.com/document/d/1-HGvj8OzYVSaOx7aWhOVHQ4JhGhwS3tiCtpGKT-C2cw/edit?usp=sharing>
-				Internal Python Modules <http://docs.shape/python>
-				performance
-				+ Add a New Internal Doc <internal_add>
-
-That is all you need to do in order to get your document included in the HTML build. However, if you would like to have a PDF, you will need to complete the next set of instructions.
-
-.. note:: For more detailed reference documents about reStructuredText, see:
-
-		*	`ReStructuredText Markup Specification <http://docutils.sourceforge.net/docs/ref/rst/restructuredtext.html>`__
-		*	`ReStructuredText Directive Reference <http://docutils.sourceforge.net/docs/ref/rst/directives.html>`__.
-
-PDFs
-----
-
-This section tells you how to add your document to the list of docs that have PDFs, so you can easily build a PDF with our styles.
-
-	1. Open ``techdocs/source/internal_library.json`` in your text editor.
-
-	2. This file is a list of JSON objects. The name of the object is the ``doc_code`` for your document. Add a JSON object for your document that includes the following info:
-
-		*	``doc_code``
-		*	``master_doc``
-		*	``title``
-		*	``layout``
-		*	``publish``
-		*	``external``
-		*	``doc_type`` (optional)
-
-	For details about these values, see :ref:`portal-doc-properties``.
-
-	**EXAMPLE 1**
-
-	The below JSON object would generate a PDF using ``source/my_supercool_doc.rst``, using the doc_code ``cool``. It would be a "short-form" document, which is to say it will not have chapter breaks, and is likely 1-5 pages. It will have an INTERNAL watermark.
-
-	.. code-block:: json
-
-		"cool" : {
-			"master_doc" : "internal/my_supercool_doc",
-			"title" : "My New Document",
-			"layout": "short-form",
-			"publish": true,
-			"external": false
-		}
-
-	**EXAMPLE 2**
-
-	The JSON object below would generate a PDF using ``source/my_supercool_doc.rst``, using the doc_code ``cool``. This document would have chapter breaks, so it's probably a longer document, maybe 20-30 pages. It will have a DRAFT watermark.
-
-	.. code-block:: json
-
-			"cool" : {
-				"master_doc" : "internal/my_supercool_doc",
-				"title" : "My New Document",
-				"layout": "long-form",
-				"publish": false,
-				"external": true
-			}
-
-Build Your PDF
-``````````````
-
-Once you’ve completed all of the above steps, all you have to do to build your doc is run the ``build_pdf.py`` script in your command line with your book's ``doc_code`` as an argument.
-
-The build script is located at the top-level of the techdocs directory, and is called like this: ``python build_pdf.py <doc_code>``.
-
-The current **Build Location** is: ``builds/pdf/<doc_code>/``
-
-**Example**
-
-Here is an example build command::
-
-	python build_pdf.py cool
-
-The above command would generate a PDF using ``source/my_supercool_doc.rst``, as defined in the example used throughout this document. The title will be “My New Document” and the PDF Filename will be ``My_New_Document_v160.pdf``. The build location would be ``builds/pdf/cool/``
-
-.. _add-pdf-link:
-
-Add a Link to the PDF to the HTML
-`````````````````````````````````
-
-To add a link to your document anywhere in the source RST, use the following markdown: ``|<doc_code>|``. So, for example, if I wanted to add the ``cool`` doc, I would type::
-
-	Here is the PDF: |cool|.
-
-The download link will be inserted. It will automatically have the title of your document, and include your PDF in the HTML output.
-
-Add a PDF Button to the HTML
-````````````````````````````
-
-If you want people to be able to download your PDF directly from the HTML page, you MUST first add a link to the PDF somewhere in the HTML using the method described above (in the :ref:`add-pdf-link` section). It's preferred that you add it to the bottom of ``techdocs/source/index_internal.rst``, where there is already a list of available PDFs.
-
-Once you've done that, you can add a PDF download button to the top of any of your HTML pages. To do so, just add a PDF meta tag (``:pdf:<doc_code>``) at the top of any source files on which you want the button to appear.
-
-For example, the following code would add a PDF download button to the My Cool Document PDF at the top of this page::
-
-	:pdf: cool
-
-	My Cool Document
-	================
-
-	<text begins here>
-
-So to be clear, you MUST add this PDF meta tag *before any other content in your source file.* Otherwise, it will 1) not work, and 2) be visible in plain-text on your HTML page and in your PDF.
-
-Submit Your Doc
+Code of Conduct
 ---------------
 
-When you are done with your edits and would like me to add your docs to the portal:
+This project adheres to the Contributor Covenant `code of
+conduct <CODE_OF_CONDUCT.adoc>`__. By participating, you are expected to
+uphold this code. Please report unacceptable behavior to
+spring-code-of-conduct@pivotal.io.
 
-	1. Submit a pull request to the ``Master`` branch.
-	2. Add AlexP and Blaise as reviewers
+Take Your First Steps
+---------------------
 
-Once your request is approved, it will show up in the next internal build at:
-http://docs.shape/internal/internal_index.html
+Understand the basics
+~~~~~~~~~~~~~~~~~~~~~
 
+Not sure what a pull request is, or how to submit one? Take a look at
+GitHub's excellent `help
+documentation <http://help.github.com/send-pull-requests>`__ first.
+
+Search Stack Overflow first; discuss if necessary
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you're unsure why something isn't working or wondering if there is a
+better way of doing it please check on Stack Overflow first and if
+necessary start a discussion. This is the official list of `Spring
+project tags <https://spring.io/questions>`__. In short the issue
+tracker should be used to report issues and make feature requests.
+
+Search JIRA; create an issue if necessary
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Is there already an issue that addresses your concern? Do a bit of
+searching in our `JIRA issue
+tracker <https://jira.spring.io/browse/SPR>`__ to see if you can find
+something similar. If you do not find something similar, please create a
+new JIRA issue before submitting a pull request unless the change is
+truly trivial -- for example: typo fixes, removing compiler warnings,
+etc.
+
+Discuss non-trivial contribution ideas with committers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you're considering anything more than correcting a typo or fixing a
+minor bug, please discuss it on the
+`spring-framework-contrib <https://groups.google.com/forum/#!forum/spring-framework-contrib>`__
+mailing list before submitting a pull request. We're happy to provide
+guidance, but please spend an hour or two researching the subject on
+your own, including searching the mailing list for prior discussions.
+
+Sign the Individual Contributor License Agreement (ICLA)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you have not previously done so, please fill out and submit the
+`Spring ICLA
+form <https://support.springsource.com/spring_committer_signup>`__.
+You'll receive a token when this process is complete. Keep track of
+this; you may be asked for it later!
+
+Note that emailing/postal mailing a signed copy is *not* necessary.
+Submission of the web form is all that is required.
+
+Once you've completed the web form, simply add the following in a
+comment on your pull request:
+
+::
+
+    I have signed and agree to the terms of the Spring Individual Contributor
+    License Agreement.
+
+You do not need to include your token/id. Please add the above statement
+to all future pull requests as well, simply so that the Spring Framework
+team knows immediately that this process is complete.
+
+Create a Branch
+---------------
+
+Branch from ``master``
+~~~~~~~~~~~~~~~~~~~~~~
+
+Master currently represents work toward Spring Framework 4.0. Please
+submit all pull requests there, even bug fixes and minor improvements.
+Backports to ``3.2.x`` will be considered on a case-by-case basis.
+
+Use short branch names
+~~~~~~~~~~~~~~~~~~~~~~
+
+Branches used when submitting pull requests should preferably be named
+according to JIRA issues, e.g. 'SPR-1234'. Otherwise, use succinct,
+lower-case, dash (-) delimited names, such as 'fix-warnings',
+'fix-typo', etc. In
+`fork-and-edit <https://github.com/blog/844-forking-with-the-edit-button>`__
+cases, the GitHub default 'patch-1' is fine as well. This is important,
+because branch names show up in the merge commits that result from
+accepting pull requests and should be as expressive and concise as
+possible.
+
+Use Spring Framework Code Style
+-------------------------------
+
+The complete `Spring Framework Code
+Style <https://github.com/spring-projects/spring-framework/wiki/Spring-Framework-Code-Style>`__
+reference is available on the wiki, but here's a quick summary:
+
+Mind the whitespace
+~~~~~~~~~~~~~~~~~~~
+
+Please carefully follow the whitespace and formatting conventions
+already present in the framework.
+
+1. Tabs, not spaces
+2. Unix (LF), not DOS (CRLF) line endings
+3. Eliminate all trailing whitespace
+4. Wrap Javadoc at 90 characters
+5. Aim to wrap code at 90 characters, but favor readability over
+   wrapping
+6. Preserve existing formatting; i.e. do not reformat code for its own
+   sake
+7. Search the codebase using ``git grep`` and other tools to discover
+   common naming conventions, etc.
+8. Latin-1 (ISO-8859-1) encoding for Java sources; use ``native2ascii``
+   to convert if necessary
+
+Add Apache license header to all new classes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: java
+
+    /*
+     * Copyright 2002-2015 the original author or authors.
+     *
+     * Licensed under the Apache License, Version 2.0 (the "License");
+     * you may not use this file except in compliance with the License.
+     * You may obtain a copy of the License at
+     *
+     *      http://www.apache.org/licenses/LICENSE-2.0
+     *
+     * Unless required by applicable law or agreed to in writing, software
+     * distributed under the License is distributed on an "AS IS" BASIS,
+     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     * See the License for the specific language governing permissions and
+     * limitations under the License.
+     */
+
+    package ...;
+
+Update Apache license header in modified files as necessary
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Always check the date range in the license header. For example, if
+you've modified a file in 2015 whose header still reads:
+
+.. code:: java
+
+    /*
+     * Copyright 2002-2011 the original author or authors.
+
+Then be sure to update it to 2015 accordingly:
+
+.. code:: java
+
+    /*
+     * Copyright 2002-2015 the original author or authors.
+
+Use @since tags for newly-added public API types and methods
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For example:
+
+.. code:: java
+
+    /**
+     * ...
+     *
+     * @author First Last
+     * @since 4.2.3
+     * @see ...
+     */
+
+Prepare Your Commit
+-------------------
+
+Submit JUnit test cases for all behavior changes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Search the codebase to find related tests and add additional ``@Test``
+methods as appropriate. It is also acceptable to submit test cases on a
+per JIRA issue basis, for example:
+
+.. code:: java
+
+    package org.springframework.beans.factory.support;
+
+    /**
+     * Unit tests for SPR-8954, in which a custom {@link InstantiationAwareBeanPostProcessor}
+     * forces the predicted type of a FactoryBean, effectively preventing retrieval of the
+     * bean from calls to #getBeansOfType(FactoryBean.class). The implementation of
+     * {@link AbstractBeanFactory#isFactoryBean(String, RootBeanDefinition)} now ensures
+     * that not only the predicted bean type is considered, but also the original bean
+     * definition's beanClass.
+     *
+     * @author Chris Beams
+     */
+    public class Spr8954Tests {
+
+        @Test
+        public void cornerSpr8954() {
+            // ...
+        }
+    }
+
+Squash commits
+~~~~~~~~~~~~~~
+
+Use ``git rebase --interactive --autosquash``, ``git add --patch``, and
+other tools to "squash" multiple commits into a single atomic commit. In
+addition to the man pages for git, there are many resources online to
+help you understand how these tools work. The `Rewriting History section
+of Pro Git <http://git-scm.com/book/en/Git-Tools-Rewriting-History>`__
+provides a good overview.
+
+Use real name in git commits
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Please configure git to use your real first and last name for any
+commits you intend to submit as pull requests. For example, this is not
+acceptable:
+
+::
+
+    Author: Nickname <user@mail.com>
+
+Rather, please include your first and last name, properly capitalized,
+as submitted against the Spring Individual Contributor License Agreement
+(ICLA):
+
+::
+
+    Author: First Last <user@mail.com>
+
+This helps ensure traceability against the ICLA and also goes a long way
+to ensuring useful output from tools like ``git shortlog`` and others.
+
+You can configure this via the account admin area in GitHub (useful for
+fork-and-edit cases); *globally* on your machine with
+
+::
+
+    git config --global user.name "First Last"
+    git config --global user.email user@mail.com
+
+or *locally* for the ``spring-framework`` repository only by omitting
+the '--global' flag:
+
+::
+
+    cd spring-framework
+    git config user.name "First Last"
+    git config user.email user@mail.com
+
+Format commit messages
+~~~~~~~~~~~~~~~~~~~~~~
+
+Please read and follow the `Commit Guidelines section of Pro
+Git <http://git-scm.com/book/en/Distributed-Git-Contributing-to-a-Project#Commit-Guidelines>`__.
+
+Most importantly, please format your commit messages in the following
+way (adapted from the commit template in the link above):
+
+::
+
+    Short (50 chars or less) summary of changes
+
+    More detailed explanatory text, if necessary. Wrap it to about 72
+    characters or so. In some contexts, the first line is treated as the
+    subject of an email and the rest of the text as the body. The blank
+    line separating the summary from the body is critical (unless you omit
+    the body entirely); tools like rebase can get confused if you run the
+    two together.
+
+    Further paragraphs come after blank lines.
+
+     - Bullet points are okay, too
+
+     - Typically a hyphen or asterisk is used for the bullet, preceded by a
+       single space, with blank lines in between, but conventions vary here
+
+    Issue: SPR-1234, SPR-1235
+
+1. Use imperative statements in the subject line, e.g. "Fix broken
+   Javadoc link".
+2. Begin the subject line with a capitalized verb, e.g. "Add, Prune,
+   Fix, Introduce, Avoid, etc."
+3. Do not end the subject line with a period.
+4. Restrict the subject line to 50 characters or less if possible.
+5. Wrap lines in the body at 72 characters or less.
+6. Mention associated JIRA issue(s) at the end of the commit comment,
+   prefixed with "Issue: " as above.
+7. In the body of the commit message, explain how things worked before
+   this commit, what has changed, and how things work now.
+
+For examples of this style, issue a ``git log --author=cbeams`` in the
+``spring-framework`` git repository. For convenience, here are several
+such commits:
+
+-  https://github.com/spring-projects/spring-framework/commit/08e2669b84ec0faa2f7904441fe39ac70b65b078
+-  https://github.com/spring-projects/spring-framework/commit/1d9d3e6ff79ce9f0eca03b02cd1df705925575da
+-  https://github.com/spring-projects/spring-framework/commit/8e0b1c3a5f957af3049cfa0438317177e16d6de6
+-  https://github.com/spring-projects/spring-framework/commit/b787a68f2050df179f7036b209aa741230a02477
+
+Run the Final Checklist
+-----------------------
+
+Run all tests prior to submission
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+See the `building from
+source <https://github.com/spring-projects/spring-framework#building-from-source>`__
+section of the ``README`` for instructions. Make sure that all tests
+pass prior to submitting your pull request.
+
+Submit your pull request
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Subject line:
+
+Follow the same conventions for pull request subject lines as mentioned
+above for commit message subject lines.
+
+In the body:
+
+1. Explain your use case. What led you to submit this change? Why were
+   existing mechanisms in the framework insufficient? Make a case that
+   this is a general-purpose problem and that yours is a general-purpose
+   solution, etc.
+2. Add any additional information and ask questions; start a
+   conversation or continue one from JIRA.
+3. Mention the JIRA issue ID.
+4. Also mention that you have submitted the ICLA as described above.
+
+Note that for pull requests containing a single commit, GitHub will
+default the subject line and body of the pull request to match the
+subject line and body of the commit message. This is fine, but please
+also include the items above in the body of the request.
+
+Mention your pull request on the associated JIRA issue
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Add a comment to the associated JIRA issue(s) linking to your new pull
+request.
+
+Expect discussion and rework
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Spring team takes a very conservative approach to accepting
+contributions to the framework. This is to keep code quality and
+stability as high as possible, and to keep complexity at a minimum. Your
+changes, if accepted, may be heavily modified prior to merging. You will
+retain "Author:" attribution for your Git commits granted that the bulk
+of your changes remain intact. You may be asked to rework the submission
+for style (as explained above) and/or substance. Again, we strongly
+recommend discussing any serious submissions with the Spring Framework
+team *prior* to engaging in serious development work.
+
+Note that you can always force push (``git push -f``) reworked / rebased
+commits against the branch used to submit your pull request. In other
+words, you do not need to issue a new pull request when asked to make
+changes.
