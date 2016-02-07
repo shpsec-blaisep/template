@@ -102,7 +102,7 @@ html_show_sourcelink = True
 htmlhelp_basename = 'ShapeDocPortal'
 html_use_index = False
 html_use_modindex = False
-html_sidebars = build.get_html_sidebars()
+# html_sidebars = build.get_html_sidebars() # We'll add the sidebars later
 html_domain_indices = False
 
 # Output file base name for HTML help builder.
