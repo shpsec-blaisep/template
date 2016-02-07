@@ -1,0 +1,80 @@
+.sphinxsidebar {
+	display: none;
+}
+
+div.body {
+	width: 100%;
+}
+
+div.bodywrapper {
+	margin: 0;
+}
+
+h1, h3 {
+	text-align: center;
+}
+
+div.body h2 {
+	border-bottom: none;
+	margin-left: 20px;
+}
+
+.deploy {
+	background-color: #C8E6C9;
+	height: 160px;
+}
+
+.deploy h3 {
+	background-color: #4CAF50;
+}
+
+.ref {
+	background-color: lightgray;
+	min-height: 160px;
+	max-height: 400px;
+}
+
+.ref h3 {
+	background-color: #727272;
+}
+
+h3 {
+	height: 40px;
+	line-height: 34px;
+	color: #fff !important;
+}
+
+li, p.relnotes {
+    font-family: 'Montserrat', sans-serif;
+}
+
+footer {
+	background-color: lightgray;
+}
+
+h3 a {
+	color: white;
+}
+
+h3 a:hover {
+	color: white;
+}
+
+input#search-text {
+    width: 96%;
+    margin-top: 20px;
+    margin-bottom: -10px;
+}
+
+img.download-pdf {
+  display: none;
+  visibility: hidden;
+}
+
+div.direction {
+    display: none !important;
+}
+
+.related {
+	display: none;
+}

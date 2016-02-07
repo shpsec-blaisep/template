@@ -1,0 +1,27 @@
+<div id="stash-link">
+    <button type="button" id="stash-button" title="view the RST file for this page in Stash - must be logged in on the High Side"><img id="stash-logo" src="{{ pathto('_static/stash_logo.png', 1) }}" alt="Stash logo"><p>View Source</p></button>
+</div>
+
+<script>
+    var stashButton = document.getElementById('stash-button');
+    var currPath = window.location.pathname;
+
+    currPath = currPath.split("/");
+    //find which item is the root and return everything after the root
+    currPath.shift();
+    currPath.shift();
+    var currPath = currPath.join('/');
+
+    var stashPath = currPath.split('.');
+    stashPath.pop();
+    stashPath = stashPath.join('');
+
+    var stashRoot = "http://stash.shape/projects/RTFM/repos/techdocs/browse/source/" ;
+
+    var stashRepo = stashRoot + stashPath + ".rst";
+
+    stashButton.onclick = function(){
+        window.location.href = stashRepo;
+    };
+
+</script>

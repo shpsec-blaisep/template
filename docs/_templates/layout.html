@@ -1,0 +1,33 @@
+{% extends "!layout.html" %}
+
+{% block extrahead %}
+	{{ super() }}
+
+		<link href="http://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+		<link href="http://fonts.googleapis.com/css?family=Roboto:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+
+		<script type="text/javascript" src="http://jira.shape/s/fb9bffe41772fc6277a0e0524e5e0392-T/en_USolwinl/6339/42/1.4.16/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-US&collectorId=d8ae9414"></script>
+
+		<script type="text/javascript" src="http://jira.shape/s/fb9bffe41772fc6277a0e0524e5e0392-T/en_USolwinl/6339/42/1.4.16/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-US&collectorId=42a43c71"></script>
+
+{% endblock %}
+
+{% block sidebar1 %}
+
+	{{ super() }}
+
+	{% if meta is defined and 'pdf' in meta.keys() %}
+
+		{% set doc_code = meta.get('pdf') %}
+
+		{% set pdf_img = "_static/Download_pdf.png" %}
+		{% set pdf_attribs = pdf_code_map[doc_code] %}
+		{% set pdf_title = pdf_attribs['title'] %}
+		{% set pdf_filename = pdf_title|replace(" ", "_") + ".pdf" %}
+		{% set pdf_src = "_downloads/" ~ pdf_filename %}
+
+			<a href="{{ pathto(pdf_src, 1) }}"><img class="download-pdf" alt="Download PDF" src="{{ pathto(pdf_img, 1) }}"></a>
+	{% else %}
+	{% endif %}
+
+{% endblock %}
